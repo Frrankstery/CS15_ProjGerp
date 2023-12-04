@@ -11,8 +11,8 @@ main.o: main.cpp
 	$(CXX) -c main.cpp
 
 
-unit_test: unit_test_driver.o CharLinkedList.o 
-	$(CXX) unit_test_driver.o CharLinkedList.o 
+unit_test: unit_test_driver.o stringProcessing.o FSTreeTraversal.o DirNode.o FSTree.o
+	$(CXX) unit_test_driver.o 
 
 
 clean:
