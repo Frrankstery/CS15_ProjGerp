@@ -7,6 +7,10 @@ LDFLAGS=-g3
 stringProcessing.o: stringProcessing.cpp stringProcessing.h main.o
 	$(CXX) -c stringProcessing.cpp 
 
+#Rule for FSTreeTraversal.o
+FSTreeTraversal.o: FSTreeTraversal.cpp DirNode.h FSTree.h
+	$(CXX) $(CXXFLAGS) -c FSTreeTraversal.cpp
+
 main.o: main.cpp
 	$(CXX) -c main.cpp
 
