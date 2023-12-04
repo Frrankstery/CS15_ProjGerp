@@ -1,0 +1,25 @@
+----------A----------
+Project 3 - Gerp
+authors: Cullen McCaleb and Frank Li
+date: 12/4
+
+----------B----------
+Purpose: The purpose of the gerp program is to search for a given word inside
+         of a given directory, and print the location of each instancee of
+         the word.
+
+----------C----------
+Acknowledgements: cplusplus.com
+
+----------D----------
+Files
+
+FSTreeTraversal.cpp:
+    This file contains a program that traverses an FSTree and prints every
+    root-to-leaf path in the tree. In the context of the entire Gerp project, 
+    it goes through a directory and prints every path to all the files.
+
+stringProcessing.h:
+
+stringProcessing.cpp:
+
