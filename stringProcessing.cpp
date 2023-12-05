@@ -1,3 +1,12 @@
+/*
+file: stringProcessing.cpp
+name: Cullen, Frank
+date: December 4, 2023
+project: proj 4 gerp
+description: this is the implementation of the class that contains the method 
+        of stripping non-alpha characters from the input string
+*/
+
 #include <string>
 #include "stringProcessing.h"
 #include <iostream>
@@ -14,6 +23,7 @@ string stringProcessing::stripNonAlphaNum (std::string input) {
         }
 
     }
+    cout << "word after: " << word.str() << endl;
     return word.str();
 }
 
@@ -26,5 +36,6 @@ bool stringProcessing::isAlphaNum (char input) {
         return true;
         
     }
+    cerr << "executing isAlphaNum: " << endl;
     return false;
 }
