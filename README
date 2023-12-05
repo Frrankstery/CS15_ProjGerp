@@ -20,6 +20,8 @@ FSTreeTraversal.cpp:
     it goes through a directory and prints every path to all the files.
 
 stringProcessing.h:
+    This is the header file for the stringProcessing class, which removes all
+    the non-alphabetical characters from a given word.
 
 stringProcessing.cpp:
-
+    This file contains the functions for the strringProcessing class.
