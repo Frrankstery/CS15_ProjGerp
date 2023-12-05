@@ -17,22 +17,44 @@ using namespace std;
 string stripNonAlphaNum (std::string input) {
     ostringstream word;
     int len = input.length();
+    char arr[len];
     for (int i = 0; i < len; i++) {
-        if (isAlphaNum(input[i])) {
-            word << input[i];
+        arr[i] = input[i];
+    }
+    for (int i = 0; i < len; i++) {
+        if (not isAlphaNum(arr[i])) {
+            arr[i] = ' ';
         }
-
+        if (isAlphaNum(arr[i])) {
+            break;
+        }
+    }
+    for (int i = 0; i < len; i++) {
+        if (not isAlphaNum(arr[len - i])) {
+            arr[len - i] = ' ';
+        }
+        if (isAlphaNum(arr[i])) {
+            break;
+        }
+    }
+    for (int i = 0; i < len; i++) {
+        if (arr[i] != ' ') {
+            word << arr[i];
+        }
     }
     return word.str();
 }
 
 bool isAlphaNum (char input) {
-    if (int(input) < 90 and int(input) > 65 ) {
+    if (int(input) <= 90 and int(input) >= 65 ) {
         return true;
     }
-    if (int(input) < 122 and int(input) > 97) {
+    if (int(input) <= 122 and int(input) >= 97) {
         return true;
         
+    }
+    if (int(input) > 47 and int(input) < 58) {
+        return true;
     }
     return false;
 }
