@@ -28,7 +28,6 @@ string stringProcessing::stripNonAlphaNum (std::string input) {
 }
 
 bool stringProcessing::isAlphaNum (char input) {
-    cerr  << int(input) << endl;
     if (int(input) < 90 and int(input) > 65 ) {
         return true;
     }
