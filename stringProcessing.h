@@ -7,15 +7,11 @@ description: this is a class that contains the method of stripping non-alpha
         characters from the input string
 */
 
-#ifndef STRINGPROCESSING_H
-#define STRINGPROCESSING_H
 
 #include <iostream>
 
 using namespace std;
 
-class stringProcessing {
-public:
 /*
 stripNonAlphaNum
 purpose: strip all the non-alphanumeric (alphabetic) characters from the given 
@@ -25,7 +21,6 @@ output: string without the non-alphanumeric characters
 */
 string stripNonAlphaNum (std::string input);
 
-private:
 /*
 isAlphaNum
 purpose: private class function used to determine whether the given char
@@ -36,6 +31,5 @@ output: boolean value that returns true if the char is an alphanumeric and false
 */
 bool isAlphaNum (char input);
 
-};
 
-#endif
+
