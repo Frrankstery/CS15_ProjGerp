@@ -14,7 +14,7 @@ description: this is the implementation of the class that contains the method
 
 using namespace std;
 
-string stringProcessing::stripNonAlphaNum (std::string input) {
+string stripNonAlphaNum (std::string input) {
     ostringstream word;
     int len = input.length();
     for (int i = 0; i < len; i++) {
@@ -23,11 +23,10 @@ string stringProcessing::stripNonAlphaNum (std::string input) {
         }
 
     }
-    cout << "word after: " << word.str() << endl;
     return word.str();
 }
 
-bool stringProcessing::isAlphaNum (char input) {
+bool isAlphaNum (char input) {
     if (int(input) < 90 and int(input) > 65 ) {
         return true;
     }
