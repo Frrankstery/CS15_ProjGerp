@@ -36,6 +36,5 @@ bool stringProcessing::isAlphaNum (char input) {
         return true;
         
     }
-    cerr << "executing isAlphaNum: " << endl;
     return false;
 }
