@@ -3,7 +3,7 @@ file: stringProcessing.h
 name: Cullen, Frank
 date: December 4, 2023
 project: proj 4 gerp
-description: this is a class that contains the method of stripping non-alpha
+description: this is a file that contains the method of stripping non-alpha
         characters from the input string
 */
 
