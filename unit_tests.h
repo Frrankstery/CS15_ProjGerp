@@ -52,8 +52,38 @@ void testDoubleHash(){
     assert(outmap.get("looking").get("found") == 5);
 }
 
+//testHashWStruct()
+// Purpose: Tests the HashMap class by created a nested HashMap with a struct 
+// as the value.
+void testHashWStruct(){
+    struct testStruct{
+        int example;
+        int test;
+    };
+    HashMap<std::string, HashMap<std::string, testStruct>> gerpHash;
+    HashMap<std::string, testStruct> dummyHash;
+    testStruct newInstance{1, 2};
+    dummyHash.insert("test", newInstance);
+    gerpHash.insert("test", dummyHash);
+    assert(gerpHash.get("test").get("test").example == 1);
+    assert(gerpHash.get("test").get("test").test == 2);
+}
+
 // testCreateWordHash()
 // Purpose: Tests if the wordHash class can be constructed
 void testCreateWordHash(){
     wordHash myHash("proj-gerp-test-dirs/tinyData");
+}
+
+// testPopulatePaths()
+// Purpose: Tests if the treeTraversal function works to populate a paths 
+//          vector.
+void testPopulatePaths(){
+    wordHash myHash("proj-gerp-test-dirs/tinyData");
+    myHash.traverseTree();
+    //test the paths vector against the results of FSTreeTraversal
+    assert(myHash.paths[0] == "proj-gerp-test-dirs/tinyData/hello");
+    assert(myHash.paths[2] == "proj-gerp-test-dirs/tinyData/a/found");
+    assert(myHash.paths[5] == 
+            "proj-gerp-test-dirs/tinyData/b/c/heyLookAtMe.txt");
 }
