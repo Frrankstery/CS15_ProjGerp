@@ -18,7 +18,7 @@ DirNode wordHash::createTree() const{
 * Input: A string representing the directory name.
 * Return: Nothing
 */
-void wordHash::traverseTree(std::string directory){
+void wordHash::traverseTree(){
     FSTree myTree(directory);
     DirNode *root = myTree.getRoot();
     std::vector<string> path;
@@ -44,13 +44,15 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& path){
             path.push_back(node->getFile(i));
             int pathSize = path.size();
             for (int j = 0; j < pathSize; j++) {
-                std::cout << path[j];
+                if(j == 0){
+                    paths.push_back("");
+                }
+                paths.back() += path[j];
                 if (j != pathSize - 1){
-                    std::cout << "/";
+                    paths.back() += "/";
                 }
             }
             path.pop_back();
-            std::cout << std::endl;
         }
     }
         if(node->hasSubDir()){
