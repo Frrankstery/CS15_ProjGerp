@@ -29,6 +29,11 @@ class wordHash {
         //has to be public because we need wordInstance in it
         HashMap<std::string, HashMap<std::string, wordInstance>> gerpHash;
 
+
+        void insert(std::string dirName);
+        DirNode *findKey(std::string value);
+        void readFile(std::string filename);
+
     private:
     /*
         //variables
