@@ -127,6 +127,23 @@ void wordHash::insert(std::string filename) {
             mainHash.insert(lower, minHash);
         }
     }
+}
+
+std::string wordHash::toLower(std::string &word) {
+   std::string lowercase = word;
+    for (char& c : lowercase) {
+        if (c >= 'A' && c <= 'Z') {
+            c = c + ('a' - 'A');
+        }
+    }
+    return lowercase;
+}
+DirNode *findKey(std::string value) {
+
+}
+void readFile(std::string filename) {
+
+}
 
 DirNode *findKey(std::string value) {
 
