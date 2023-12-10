@@ -35,6 +35,7 @@ class wordHash {
         void readFile(std::string filename);
 
     private:
+    std::string toLower(std::string &word);
     /*
         //variables
         std::string directory;
