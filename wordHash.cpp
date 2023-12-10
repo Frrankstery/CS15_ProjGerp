@@ -91,6 +91,7 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
         - CHECK if word exists in the hash before adding it to the hash
         - remember to keep the outer hash key as lowercase, and the inner 
           hash key as case sensitive
+*/
 void wordHash::insert(std::string filename) {
     std::ifstream myfile;
     myfile.open(filename);
