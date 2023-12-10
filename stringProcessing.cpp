@@ -15,34 +15,19 @@ description: this is the implementation of the class that contains the method
 using namespace std;
 
 string stripNonAlphaNum (std::string input) {
-    ostringstream word;
-    int len = input.length();
-    char arr[len];
-    for (int i = 0; i < len; i++) {
-        arr[i] = input[i];
+    std::string result = input;
+
+    // Remove non-alphanumeric characters from the beginning
+    while (!result.empty() && !isAlphaNum(result.front())) {
+        result.erase(0, 1);
     }
-    for (int i = 0; i < len; i++) {
-        if (not isAlphaNum(arr[i])) {
-            arr[i] = ' ';
-        }
-        if (isAlphaNum(arr[i])) {
-            break;
-        }
+
+    // Remove non-alphanumeric characters from the end
+    while (!result.empty() && !isAlphaNum(result.back())) {
+        result.pop_back();
     }
-    for (int i = 0; i < len; i++) {
-        if (not isAlphaNum(arr[len - i])) {
-            arr[len - i] = ' ';
-        }
-        if (isAlphaNum(arr[i])) {
-            break;
-        }
-    }
-    for (int i = 0; i < len; i++) {
-        if (arr[i] != ' ') {
-            word << arr[i];
-        }
-    }
-    return word.str();
+
+    return result;
 }
 
 bool isAlphaNum (char input) {
@@ -58,3 +43,5 @@ bool isAlphaNum (char input) {
     }
     return false;
 }
+
+
