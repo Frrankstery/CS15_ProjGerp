@@ -1,7 +1,11 @@
 #include "FSTree.h"
 #include "DirNode.h"
-#include "stringProcessing.h"
+#include "stringProcessing.cpp"
 #include "wordHash.h"
+
+#include <iostream>
+#include <fstream>
+#include <istream>
 
 wordHash::wordHash(string dirName) {
     directory = dirName;
@@ -18,7 +22,7 @@ DirNode wordHash::createTree() const{
 * Input: A string representing the directory name.
 * Return: Nothing
 */
-void wordHash::traverseTree(){
+void wordHash::traverseTree(std::string directory){
     FSTree myTree(directory);
     DirNode *root = myTree.getRoot();
     std::vector<string> path;
@@ -62,4 +66,44 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& path){
         }
 
     path.pop_back();
+}
+
+//remember to return hash
+void wordHash::insert(std::string filename) {
+    ifstream myfile;
+    
+    myfile.open(filename);
+    if(myfile.fail()) {
+        cerr << "error opening file \n";
+        return;
+    }
+    std::string word;
+    std::string line;
+    int lineNum = 0; // track lin num
+
+    while (getline(myfile, line)) {
+        lineNum++;
+        line >> word;
+        stripNonAlphaNum(word); //remove the non-letter characters from the word
+
+    }
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+}
+
+DirNode *findKey(std::string value) {
+
+}
+void readFile(std::string filename) {
+
 }
