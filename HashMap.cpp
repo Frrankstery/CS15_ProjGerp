@@ -67,6 +67,14 @@ public:
         // Key not found, return a null V
         return V();
     }
+
+    bool inHash(const K& key){
+        if(get(key) == NULL){
+            return false;
+        }else{
+            return true;
+        }
+    }
     
 
 private:
