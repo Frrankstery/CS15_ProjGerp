@@ -85,46 +85,48 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
 }
 
 
-//remember to return hash
-void wordHash::insertWords(std::string filename) {
-    ifstream myfile;
-    
-    myfile.open(filename);
-    if(myfile.fail()) {
-        cerr << "error opening file \n";
-        return;
-    }
-    std::string word;
-    std::string line;
-    int lineNum = 0; // track lin num
-
-    /* TODO - IMPORTANT
+/* TODO - IMPORTANT
         - use stringProcessing on the word
         - figure out how to keep track of pathNum
         - CHECK if word exists in the hash before adding it to the hash
         - remember to keep the outer hash key as lowercase, and the inner 
           hash key as case sensitive
-    */
-    while (getline(myfile, line)) {
-        lineNum++;  
-        std::istringstream lineStream(line);  
-        while(lineStream >> word){
-            
-            stripNonAlphaNum(word); //remove the non-letter characters from the word
-
-            //create a hashmap in order to insert it to the mainHash
-            HashMap<std::string, wordInstance> wordHash;
-            //create a word instance, not sure how we are going to keep track of pathNum
-            //wordInstance newInstance{, lineNum};
-            //insert the word into the first hash
-            //wordHash.insert(word, newInstance);
-            //insert the word and firsh hash into the main hash
-            mainHash.insert(word, wordHash);
-        }  
-
+void wordHash::insert(std::string filename) {
+    std::ifstream myfile;
+    myfile.open(filename);
+    //check if the file is open
+    if(myfile.fail()) {
+        std::cerr << "error opening file \n";
+        return;
     }
+    //variables
+    std::string word;
+    std::string line;
+    int lineNum = 0; // track line num
+    //read lines
+    while (std::getline(myfile, line)) {
+        lineNum++;
+        //copy the line into istream
+        std::istringstream s(line); 
+        //read words from line
+        while(getline(s, word, ' ')) {
+            //change word to lowercase
+            std::string lower = toLower(word);
+            //remove the non-letters/numbers
+            word = stripNonAlphaNum(word);
 
-}   
+            //check for collisions
+            if(mainHash.get(lower).get(word).lineNum == lineNum) {
+                std::cerr << "collision with " << word << std::endl;
+            }
+            //insert word into hash
+            wordInstance instance;
+            instance.lineNum = lineNum; 
+            HashMap<std::string, wordInstance> minHash;
+            minHash.insert(word, instance);
+            mainHash.insert(lower, minHash);
+        }
+    }
 
 DirNode *findKey(std::string value) {
 
