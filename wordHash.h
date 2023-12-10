@@ -30,7 +30,7 @@ class wordHash {
         HashMap<std::string, HashMap<std::string, wordInstance>> gerpHash;
 
 
-        void insertWord(std::string dirName);
+        void insertWords(std::string dirName);
         DirNode *findKey(std::string value);
         void readFile(std::string filename);
 
