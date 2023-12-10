@@ -1,19 +1,31 @@
+/*
+ *  wordHash.cpp
+ *  Cullen McCaleb & Frank Li
+ *  12/06
+ *
+ *  CS 15 Project 4 Gerp
+ *
+ *  File Purpose:
+ *  This file contains the implementation of the wordHash class, which creates
+ *  and fills a hashMap according to the data in agiven directory.
+ *
+ */
+
 #include "FSTree.h"
 #include "DirNode.h"
-#include "stringProcessing.cpp"
+#include "stringProcessing.h"
 #include "wordHash.h"
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <istream>
 
 wordHash::wordHash(string dirName) {
     directory = dirName;
-}
-
-DirNode wordHash::createTree() const{
-    FSTree tree(directory);
-    return *tree.getRoot();
+    FSTree tempTree(directory);
+    //use of copy contructor
+    tree = tempTree;
 }
 
 /* traverseTree()
@@ -22,11 +34,10 @@ DirNode wordHash::createTree() const{
 * Input: A string representing the directory name.
 * Return: Nothing
 */
-void wordHash::traverseTree(std::string directory){
-    FSTree myTree(directory);
-    DirNode *root = myTree.getRoot();
-    std::vector<string> path;
-    traverseTreeHelper(root, path);
+void wordHash::traverseTree(){
+    int fileCounter = 0;
+    std::vector<string> tempPath;
+    traverseTreeHelper(tree.getRoot(), tempPath);
 }
 
 /* traverseTreeHelper()
@@ -36,40 +47,46 @@ void wordHash::traverseTree(std::string directory){
          names of every file in the paths.
 * Return: Nothing
 */
-void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& path){
+void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
+
     if (node->isEmpty()){
         return;
     }
 
-    path.push_back(node->getName());
+    tempPath.push_back(node->getName());
 
     if (node->hasFiles()) {
         for(int i = 0; i<node->numFiles(); i++){
-            path.push_back(node->getFile(i));
-            int pathSize = path.size();
+            tempPath.push_back(node->getFile(i));
+            int pathSize = tempPath.size();
             for (int j = 0; j < pathSize; j++) {
                 if(j == 0){
                     paths.push_back("");
                 }
-                paths.back() += path[j];
+                paths.back() += tempPath[j];
                 if (j != pathSize - 1){
                     paths.back() += "/";
                 }
             }
-            path.pop_back();
+            //call insert command here, with tempPath.back() as directory name
+            insertWords(tempPath.back());
+            std::cout << tempPath.back() << endl;
+            tempPath.pop_back();
+            
         }
     }
         if(node->hasSubDir()){
             for(int i = 0; i<node->numSubDirs(); i++){
-                traverseTreeHelper(node->getSubDir(i), path);
+                traverseTreeHelper(node->getSubDir(i), tempPath);
             }
         }
 
-    path.pop_back();
+    tempPath.pop_back();
 }
 
+
 //remember to return hash
-void wordHash::insert(std::string filename) {
+void wordHash::insertWords(std::string filename) {
     ifstream myfile;
     
     myfile.open(filename);
@@ -81,25 +98,33 @@ void wordHash::insert(std::string filename) {
     std::string line;
     int lineNum = 0; // track lin num
 
+    /* TODO - IMPORTANT
+        - use stringProcessing on the word
+        - figure out how to keep track of pathNum
+        - CHECK if word exists in the hash before adding it to the hash
+        - remember to keep the outer hash key as lowercase, and the inner 
+          hash key as case sensitive
+    */
     while (getline(myfile, line)) {
-        lineNum++;
-        line >> word;
-        stripNonAlphaNum(word); //remove the non-letter characters from the word
+        lineNum++;  
+        std::istringstream lineStream(line);  
+        while(lineStream >> word){
+            
+            stripNonAlphaNum(word); //remove the non-letter characters from the word
+
+            //create a hashmap in order to insert it to the mainHash
+            HashMap<std::string, wordInstance> wordHash;
+            //create a word instance, not sure how we are going to keep track of pathNum
+            //wordInstance newInstance{, lineNum};
+            //insert the word into the first hash
+            //wordHash.insert(word, newInstance);
+            //insert the word and firsh hash into the main hash
+            mainHash.insert(word, wordHash);
+        }  
 
     }
 
-    
-    
-
-
-
-    
-    
-
-
-
-
-}
+}   
 
 DirNode *findKey(std::string value) {
 
