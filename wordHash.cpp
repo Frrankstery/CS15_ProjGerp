@@ -21,11 +21,37 @@
 #include <sstream>
 #include <istream>
 
+//empty constructor
+wordHash::wordHash() {
+
+}
+
+//constructor
 wordHash::wordHash(string dirName) {
     directory = dirName;
     FSTree tempTree(directory);
     //use of copy contructor
     tree = tempTree;
+}
+
+//assignment operator
+wordHash &wordHash::operator=(const wordHash &other){
+
+    //check if both objects are the exact same
+    if(this == &other){
+        return *this;
+    }
+
+    tree = other.tree;
+    directory = other.directory;
+    
+    return *this;
+}
+
+//copy constructor
+wordHash::wordHash(const wordHash &other){
+    tree = other.tree;
+    directory = other.directory;
 }
 
 /* traverseTree()
@@ -38,6 +64,9 @@ void wordHash::traverseTree(){
     int fileCounter = 0;
     std::vector<string> tempPath;
     traverseTreeHelper(tree.getRoot(), tempPath);
+    for(size_t i = 0; i<paths.size(); i++){
+        insertWords(paths[i]);
+    }
 }
 
 /* traverseTreeHelper()
@@ -69,8 +98,8 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
                 }
             }
             //call insert command here, with tempPath.back() as directory name
-            insertWords(tempPath.back());
-            std::cout << tempPath.back() << endl;
+            //insertWords(tempPath.back());
+            //std::cout << tempPath.back() << endl;
             tempPath.pop_back();
             
         }
@@ -82,23 +111,24 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
         }
 
     tempPath.pop_back();
-}
+}  
 
-
-/* TODO - IMPORTANT
+ /* TODO - IMPORTANT
         - use stringProcessing on the word
         - figure out how to keep track of pathNum
         - CHECK if word exists in the hash before adding it to the hash
         - remember to keep the outer hash key as lowercase, and the inner 
           hash key as case sensitive
-*/
-void wordHash::insert(std::string filename) {
+    */
+void wordHash::insertWords(std::string filename) {
     std::ifstream myfile;
     myfile.open(filename);
     //check if the file is open
     if(myfile.fail()) {
         std::cerr << "error opening file \n";
         return;
+    }else{
+        std::cout << "opened the file" << endl;
     }
     //variables
     std::string word;
@@ -117,15 +147,14 @@ void wordHash::insert(std::string filename) {
             word = stripNonAlphaNum(word);
 
             //check for collisions
-            if(mainHash.get(lower).get(word).lineNum == lineNum) {
-                std::cerr << "collision with " << word << std::endl;
-            }
+            //if(mainHash.get(lower).get(word).lineNum == lineNum) {
+            //    std::cerr << "collision with " << word << std::endl;
+            //}
+
             //insert word into hash
-            wordInstance instance;
-            instance.lineNum = lineNum; 
-            HashMap<std::string, wordInstance> minHash;
-            minHash.insert(word, instance);
-            mainHash.insert(lower, minHash);
+            //create a vector of word instances
+            
+            addToHash(lower, word, lineNum);
         }
     }
 }
@@ -139,16 +168,31 @@ std::string wordHash::toLower(std::string &word) {
     }
     return lowercase;
 }
-DirNode *findKey(std::string value) {
 
-}
-void readFile(std::string filename) {
-
-}
-
-DirNode *findKey(std::string value) {
-
-}
-void readFile(std::string filename) {
-
+void wordHash::addToHash(std::string lower, std::string word, int lineNum) {
+    if(!mainHash.inHash(lower)){
+        HashMap<std::string, vector<wordInstance>> minHash;
+        vector<wordInstance> wordInstances;
+        //create a wordInstance with lineNum and 0 for pathNum
+        wordInstance instance{0, lineNum};
+        wordInstances.push_back(instance);
+        minHash.insert(word, wordInstances);
+        mainHash.insert(lower, minHash);
+        std::cout << "successfully added" << word << endl;
+    }else{
+        //check if the case sensitive word is in the second hash
+        if(mainHash.get(lower).inHash(word)){
+            //create a word instance of the new word
+            wordInstance instance{0, lineNum};
+            mainHash.get(lower).get(word).push_back(instance);
+            std::cout << "successfully added" << word << endl;
+        }else{
+            //else, the case sensitive word does not exist yet
+            vector<wordInstance> wordInstances;
+            wordInstance instance{0, lineNum};
+            wordInstances.push_back(instance);
+            mainHash.get(lower).insert(word, wordInstances);
+            std::cout << "successfully added" << word << endl;
+        }
+    }
 }
