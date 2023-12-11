@@ -1,3 +1,5 @@
+
+
 #ifndef _WORD_HASH_
 #define _WORD_HASH_
 
@@ -10,11 +12,14 @@
 
 class wordHash {
     public:
+        //constructors
         wordHash(string dirName);
+        wordHash();
+        wordHash(const wordHash &other);
+        wordHash &operator=(const wordHash &other);
 
         //functions
-        DirNode createTree() const;
-        void traverseTree(std::string directory);
+        void traverseTree();
         void traverseTreeHelper(DirNode *node, std::vector<string>& path);
 
         //variables
@@ -26,13 +31,13 @@ class wordHash {
             int lineNum;
         };
 
-        //has to be public because we need wordInstance in it
-        HashMap<std::string, HashMap<std::string, wordInstance>> gerpHash;
-
+        FSTree tree;
 
         void insertWords(std::string dirName);
-        DirNode *findKey(std::string value);
-        void readFile(std::string filename);
+        void addToHash(std::string lower, std::string word, int lineNum);
+
+        //has to be public because we need wordInstance in it
+        HashMap<std::string, HashMap<std::string, vector<wordInstance>>> mainHash;
 
     private:
     std::string toLower(std::string &word);
@@ -46,7 +51,7 @@ class wordHash {
             int lineNum;
         };
 
-        HashMap<std::string, HashMap<std::string, wordInstance>> gerpHash;
+        HashMap<std::string, HashMap<std::string, wordInstance>> mainHash;
 
     */
 
