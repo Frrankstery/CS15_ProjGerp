@@ -38,7 +38,7 @@ public:
     * Purpose: Constructor for HashMap to make the size of the map 1.
     * Input: Nothing
     * Return: Nothing
-    */
+    * */
     HashMap(){
         map.resize(1);
         numElements = 0;
@@ -50,6 +50,8 @@ public:
     * Return: Nothing
     */
     void insert(const K& key, const V& value) {
+        numElements++;
+
         //create hash index for the key
         int index = hash(key);
         //create the new node
@@ -122,6 +124,8 @@ public:
     */
     const V& at(size_t index) const{
         size_t count = 0;
+        //loop through the each node in the map until you reach the index
+        //use a range-based loop, using auto keyword
         for (const auto& bucket : map) {
             for (const auto& node : bucket) {
                 if (count == index) {
@@ -156,7 +160,7 @@ public:
     /* size()
     * Purpose: Returns the size of the hashmap
     * Input: Nothing
-    * Return: Nothing
+    * Return: An int representing the number of elements
     */
     int size() {
         return numElements;
@@ -169,6 +173,7 @@ private:
         V value;
     };
 
+    //int to track the number of elements in the hash map
     int numElements;
 
     //vector of a vector of values (the scond vector is for chaining)
@@ -180,11 +185,7 @@ private:
     //hash function for the keys
     std::hash<K> hasher;
 
-    /* size()
-    * Purpose: Hash function to get an index for the key.
-    * Input: A reference to a key of type K
-    * Return: An integer representing the index.
-    */
+    //hash function to get an index for the key
     int hash(const K& key) const {
         return hasher(key) % map.size();
     }
