@@ -8,14 +8,17 @@
  *  File Purpose:
  *  This file contains the definitions and implementation for a HashMap class.
  *  This HashMap class creates a hash map data structure for use in the gerp
- *  project. This class offers an insert function and two get function, to
+ *  project. The hash map is created using a vector, and handles collisions
+ *  using another vector for chainging.
+ * 
+ *  This class offers an insert function and two get function, to
  *  interact with the hash map. 
  * 
- * NOTE: There are two get functions, one for constant values and the other 
- *       for non-constant values.
+ * NOTES: There are two get functions, one for constant values and the other 
+ *        for non-constant values.
  * 
- *  HashMap is in one file, and not split into a .h and .cpp file, since it 
- *  requires the use of a template.
+ *        HashMap is in one file, and not split into a .h and .cpp file, since
+*         it requires the use of a template.
  *
  */
 
@@ -38,7 +41,8 @@ public:
     */
     HashMap(){
         map.resize(1);
-    } 
+        numElements = 0;
+    }
 
     /* insert()
     * Purpose: Insert key-value pair into the map.
@@ -62,6 +66,7 @@ public:
 
         // Add the new node to the hashMap
         map[index].push_back(newWord);
+        values.push_back(value);
     }
     
     /* get()
@@ -110,6 +115,25 @@ public:
         return default_value;
     }
 
+    /* at()
+    * Purpose: Return the value at a given index of the hash map.
+    * Input: An index of type size_t
+    * Return: A reference to the value, of the type of the value.
+    */
+    const V& at(size_t index) const{
+        size_t count = 0;
+        for (const auto& bucket : map) {
+            for (const auto& node : bucket) {
+                if (count == index) {
+                    return node.value;
+                }
+                count++;
+            }
+        }
+
+        throw std::out_of_range("Index out of bounds");
+    }
+
     /* inHash()
     * Purpose: Find out if the value is in the hashmap or not.
     * Input: A constant reference to a key
@@ -129,13 +153,13 @@ public:
         return false;
     }
 
-    /* inHash()
+    /* size()
     * Purpose: Returns the size of the hashmap
     * Input: Nothing
     * Return: Nothing
     */
-    int size(){
-        return map.size();
+    int size() {
+        return numElements;
     }
 
 private:
@@ -145,13 +169,22 @@ private:
         V value;
     };
 
+    int numElements;
+
     //vector of a vector of values (the scond vector is for chaining)
     std::vector<std::vector<Node>> map;
+
+    //vector of values, to help for the at() function
+    std::vector<V> values;
 
     //hash function for the keys
     std::hash<K> hasher;
 
-    //hash function to get an index for the key
+    /* size()
+    * Purpose: Hash function to get an index for the key.
+    * Input: A reference to a key of type K
+    * Return: An integer representing the index.
+    */
     int hash(const K& key) const {
         return hasher(key) % map.size();
     }
