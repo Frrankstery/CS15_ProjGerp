@@ -7,9 +7,12 @@
  *
  *  File Purpose:
  *  This file is the header file for the searchDir class, which will
- *  fascillatate the output in the gerp project, using the hashMap created
- *  in the wordHash class.
- *  There are no significant data structures in this class.
+ *  fascillatate the output in the gerp project, using the HashMap created
+ *  in the wordHash class. The public function runGerp uses the private
+ *  functions to run the insensitive search, sensitive search, @f command,
+ *  and @q command that are required in the Gerp project.
+ *  There are no significant data structures in this class, other than a
+ *  redefinition of the wordInstance struct from wordHash.
  *
  */
 
@@ -17,9 +20,23 @@
 
 class searchDir {
     public:
+        //constructor
         searchDir();
-        void runGerp(std::string filename);
+        //only public function
+        void runGerp(std::string inputFile, std::string outputFile);
 
     private:
-        //wordHash gerpHash;
+        //wordInstance struct
+        struct wordInstance{
+            int pathIndex;
+            int lineNum;
+        };
+
+        //private functitons
+        void insensitive(std::string command, wordHash* gerpHash, 
+                                                std::ostream& output);
+        void sensitive(std::string command, wordHash* gerpHash, 
+                                                std::ostream& output);
+        bool checkRepeats(int j, int i, std::string word, wordHash* gerpHash, 
+                                    vector<wordInstance>& reportedLines);
 };
