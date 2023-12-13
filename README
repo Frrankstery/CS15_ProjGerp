@@ -73,10 +73,18 @@ type "./gerp [directory name] [output filename]" to execute the program
 
 
 ----------F----------
+The functionalities of Gerp is done through calling an instance of the searchDir 
+class in main.cpp. The searchDir class method takes a directory and an output 
+file as parameters. It calls the wordHash class to create a double hash 
+structure and a n-nary tree that stores the names of the directories and words
+in them. "std::map" is used as the underlying data structure for the double 
+hashing in wordHash and is implemented in the HashMap class. 
 
 ----------G----------
 
 ----------H----------
+We have tested searchDir class mostly through main.cpp. Unit_tests.h was used
+to test HashMap and wordHash. We also used std::cerr to debug.
 
 
 ----------I----------
