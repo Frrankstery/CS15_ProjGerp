@@ -19,9 +19,65 @@ FSTreeTraversal.cpp:
     root-to-leaf path in the tree. In the context of the entire Gerp project, 
     it goes through a directory and prints every path to all the files.
 
+DirNode.h:
+    This file contains the interface of the DirNode class where each of the 
+    node on the tree represents a folder. Each instance of the DirNode has a
+    name, a list of files in the directory and a list of subdirectories.
+
+
 stringProcessing.h:
     This is the header file for the stringProcessing class, which removes all
     the non-alphabetical characters from a given word.
 
 stringProcessing.cpp:
     This file contains the functions for the strringProcessing class.
+
+HashMap.cpp:
+    
+
+wordHash.h:
+    This is the header file for the wordHash class which updates the tree and 
+    double hash. 
+
+wordHash.cpp:
+    This is an implementation of wordHash.h and it creates a n-ary tree where 
+    each node is populated with names of directories 
+    <!-- TODO explain traverse tree -->
+    It also insert the words and location from the given file into a double 
+    hash where the the key is the lower case of the word, the value consists
+    of the case-sensitive version of the word and a vector of structs that
+    stores the location of it in the file stored in the key and value 
+    respectively.
+    
+
+searchDir.h:
+    This is the header file for the searchDir class which deals with the user 
+    input, output and searching for the case sensitive and insensitive instance
+    of the word in the given directory. 
+
+searchDir.cpp:
+    This is the implementation of the searchDir class. 
+
+makefile:
+    This file handles the execution of the program and compiles the program
+    using the keyword "make".
+
+unit_tests.h:
+    This is the framework that we used for testing the functionalities of the 
+    program.
+
+
+----------E----------
+type "make" in the terminal to compile
+type "./gerp [directory name] [output filename]" to execute the program
+
+
+----------F----------
+
+----------G----------
+
+----------H----------
+
+
+----------I----------
+about 20 hours
