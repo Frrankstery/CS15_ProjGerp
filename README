@@ -84,7 +84,8 @@ hashing in wordHash and is implemented in the HashMap class.
 
 ----------H----------
 We have tested searchDir class mostly through main.cpp. Unit_tests.h was used
-to test HashMap and wordHash. We also used std::cerr to debug.
+to test HashMap and wordHash. We also used std::cerr and diff with the demo file
+to debug.
 
 
 ----------I----------
