@@ -7,7 +7,7 @@
  *
  *  File Purpose:
  *  This file contains the implementation of the wordHash class, which creates
- *  and fills a hashMap according to the data in agiven directory.
+ *  and fills a hashMap according to the contents of a given directory.
  *
  */
 
@@ -21,12 +21,12 @@
 #include <sstream>
 #include <istream>
 
-//empty constructor
-wordHash::wordHash() {
-
-}
-
-//constructor
+/* wordHash()
+* Purpose: Constructs an instance of wordHash, by updated the directory name,
+*          creating an FSTree, and updating tree.
+* Input: Nothing.
+* Return: Nothing.
+*/
 wordHash::wordHash(string dirName) {
     directory = dirName;
     FSTree tempTree(directory);
@@ -34,49 +34,29 @@ wordHash::wordHash(string dirName) {
     tree = tempTree;
 }
 
-//assignment operator
-wordHash &wordHash::operator=(const wordHash &other){
-
-    //check if both objects are the exact same
-    if(this == &other){
-        return *this;
-    }
-
-    tree = other.tree;
-    directory = other.directory;
-    
-    return *this;
-}
-
-//copy constructor
-wordHash::wordHash(const wordHash &other){
-    tree = other.tree;
-    directory = other.directory;
-}
-
-/* traverseTree()
-* Purpose: Creates a tree from a given directory, and prints every path in 
-           that tree, from the directory name to the file name
-* Input: A string representing the directory name.
+/* fillHash()
+* Purpose: Creates a tree from a given directory, uses fillPaths to
+           traverse the tree and fill in the paths array, then uses insertWords
+           to fill the hash.
+* Input: Nothing
 * Return: Nothing
 */
-void wordHash::traverseTree(){
+void wordHash::fillHash(){
     std::vector<string> tempPath;
-    traverseTreeHelper(tree.getRoot(), tempPath);
+    fillPaths(tree.getRoot(), tempPath);
     for(size_t i = 0; i<paths.size(); i++){
         insertWords(paths[i], i);
     }
 }
 
-/* traverseTreeHelper()
-* Purpose: Helps traverseTree to print each root-leaf path in the FSTree.
-           This is a recursive function.
+/* fillPaths()
+* Purpose: Takes a tree's root and fills in the path array, recursively.
 * Input: A pointer to a dirNode, and a reference to a vector containing the 
          names of every file in the paths.
-* Return: Nothing
+* Return: Nothing.
 */
-void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
-
+void wordHash::fillPaths(DirNode *node, std::vector<string>& tempPath){
+    //check that the tree is not empty
     if (node->isEmpty()){
         return;
     }
@@ -102,20 +82,20 @@ void wordHash::traverseTreeHelper(DirNode *node, std::vector<string>& tempPath){
     }
         if(node->hasSubDir()){
             for(int i = 0; i<node->numSubDirs(); i++){
-                traverseTreeHelper(node->getSubDir(i), tempPath);
+                fillPaths(node->getSubDir(i), tempPath);
             }
         }
 
     tempPath.pop_back();
 }  
 
- /* TODO - IMPORTANT
-        - use stringProcessing on the word
-        - figure out how to keep track of pathNum
-        - CHECK if word exists in the hash before adding it to the hash
-        - remember to keep the outer hash key as lowercase, and the inner 
-          hash key as case sensitive
-    */
+/* insertWords()
+* Purpose: Inserts all the words in a file to the hash table.
+* Input: A string representing the filename, and an index to the path array.
+         The pathIndex is used so the words that are added are associated with
+         a path.
+* Return: Nothing.
+*/
 void wordHash::insertWords(std::string filename, int pathIndex) {
     std::ifstream myfile;
     myfile.open(filename);
@@ -129,31 +109,30 @@ void wordHash::insertWords(std::string filename, int pathIndex) {
     //variables
     std::string word;
     std::string line;
-    int lineNum = 0; // track line num
+    int lineNum = 0;
     //read lines
     while (std::getline(myfile, line)) {
         lineNum++;
         //copy the line into istream
-        std::istringstream s(line); 
+        std::istringstream words(line); 
         //read words from line
         addLines(line, pathIndex);
-        while(getline(s, word, ' ')) {
+        while(getline(words, word, ' ')) {
             //remove the non-letters/numbers
             word = stripNonAlphaNum(word);
             //change word to lowercase
             std::string lower = toLower(word);
-            //check for collisions
-            //if(mainHash.get(lower).get(word).lineNum == lineNum) {
-            //    std::cerr << "collision with " << word << std::endl;
-            //}
-
             //insert word into hash
-            //create a vector of word instances
             addToHash(lower, word, pathIndex, lineNum);
         }
     }
 }
 
+/* toLower()
+* Purpose: Takes a word with uppercase letters and makes it all lowercase
+* Input: A refrence to a string to make lowercase.
+* Return: A string, representing the lowercase version of the word.
+*/
 std::string wordHash::toLower(std::string &word) {
    std::string lowercase = word;
     for (char& c : lowercase) {
@@ -164,9 +143,17 @@ std::string wordHash::toLower(std::string &word) {
     return lowercase;
 }
 
-void wordHash::addToHash(std::string lower, std::string word, int pathIndex, int lineNum) {
+/* addToHash()
+* Purpose: Adds a word to the hash. The spot in the hash depends on if the 
+           word already exists or not.
+* Input: Two strings representing the word, and lowercase version of the word
+         Two ints representing the paths index and line number.
+* Return: Nothing
+*/
+void wordHash::addToHash(std::string lower, std::string word, int pathIndex, 
+                                                            int lineNum) {
+    //check if the word is in the first hash already
     if(!mainHash.inHash(lower)){
-        //std::cout << word << " new"<< endl;
         HashMap<std::string, vector<wordInstance>> minHash;
         vector<wordInstance> wordInstances;
         wordInstance instance{pathIndex, lineNum};
@@ -178,10 +165,10 @@ void wordHash::addToHash(std::string lower, std::string word, int pathIndex, int
         HashMap<std::string, vector<wordInstance>>& minHash = mainHash.get(lower);
         //check if the case sensitive word is in the second hash
         if(minHash.inHash(word)){
-            vector<wordInstance>& wordInstances = minHash.get(word);
-            if(!((wordInstances.back().lineNum == lineNum) and (wordInstances.back().pathIndex == pathIndex))){
+            vector<wordInstance>* wordInstances = &minHash.get(word);
+            if(!((wordInstances->back().lineNum == lineNum) and (wordInstances->back().pathIndex == pathIndex))){
                 wordInstance instance{pathIndex, lineNum};
-                wordInstances.push_back(instance); // Add the instance to the new vector
+                wordInstances->push_back(instance); // Add the instance to the new vector
             }
         }else{
             //create a word instance of the new word
@@ -193,6 +180,12 @@ void wordHash::addToHash(std::string lower, std::string word, int pathIndex, int
     }
 }
 
+/* addLines()
+* Purpose: Adds a line to the line vector.
+* Input: A string represnting the line, and pathIndex to represent the file 
+         the line is associated with.
+* Return: Nothing.
+*/
 void wordHash::addLines(std::string line, int pathIndex){
     lines[pathIndex].push_back(line);
 }
