@@ -9,16 +9,17 @@
  *  This file contains the definitions and implementation for a HashMap class.
  *  This HashMap class creates a hash map data structure for use in the gerp
  *  project. The hash map is created using a vector, and handles collisions
- *  using another vector for chainging.
+ *  using another vector for chainging. It also dynamically resizes.
  * 
- *  This class offers an insert function and two get function, to
- *  interact with the hash map. 
+ *  This class offers an insert function, two get funciions, an inHash 
+ *  function, an at function, and a size function to interact with the 
+ *  hash map. 
  * 
  * NOTES: There are two get functions, one for constant values and the other 
  *        for non-constant values.
  * 
  *        HashMap is in one file, and not split into a .h and .cpp file, since
-*         it requires the use of a template.
+ *        it requires the use of a template.
  *
  */
 
@@ -42,6 +43,7 @@ public:
     HashMap(){
         map.resize(1);
         numElements = 0;
+        capacity = 1;
     }
 
     /* insert()
@@ -51,6 +53,11 @@ public:
     */
     void insert(const K& key, const V& value) {
         numElements++;
+
+        //convert numElements to a double, and check if resizing is necessary
+        if((static_cast<double>(numElements) / map.size()) > 0.75){
+            resize();
+        }
 
         //create hash index for the key
         int index = hash(key);
@@ -68,7 +75,6 @@ public:
 
         // Add the new node to the hashMap
         map[index].push_back(newWord);
-        values.push_back(value);
     }
     
     /* get()
@@ -125,11 +131,10 @@ public:
     const V& at(size_t index) const{
         size_t count = 0;
         //loop through the each node in the map until you reach the index
-        //use a range-based loop, using auto keyword
-        for (const auto& bucket : map) {
-            for (const auto& node : bucket) {
+        for (size_t i = 0; i < map.size(); ++i) {
+            for (size_t j = 0; j < map[i].size(); ++j) {
                 if (count == index) {
-                    return node.value;
+                    return map[i][j].value;
                 }
                 count++;
             }
@@ -167,27 +172,55 @@ public:
     }
 
 private:
+
     //node to contain key-value pairs
     struct Node {
         K key;
         V value;
     };
 
-    //int to track the number of elements in the hash map
+    //ints to keep track of the capacity and elements of the map
+    int capacity;
     int numElements;
 
-    //vector of a vector of values (the scond vector is for chaining)
+    //vector of a vector of values (the second vector is for chaining)
     std::vector<std::vector<Node>> map;
-
-    //vector of values, to help for the at() function
-    std::vector<V> values;
 
     //hash function for the keys
     std::hash<K> hasher;
 
-    //hash function to get an index for the key
+    /* hash()
+    * Purpose: Gets an index for the key
+    * Input: A reference to a key.
+    * Return: An int representing the index
+    */
     int hash(const K& key) const {
         return hasher(key) % map.size();
+    }
+
+    /* resize()
+    * Purpose: Resizes the hash map if the capacity is too small
+    * Input: Nothing.
+    * Return: Nothing.
+    */
+    void resize(){
+        //changes capacity to a big enough amount
+        int newCapacity = capacity*2 + 2;
+
+        std::vector<std::vector<Node>> newMap;
+        newMap.resize(newCapacity);
+
+        for(int i = 0; i<capacity; i++){
+            for(size_t j = 0; j<map[i].size(); j++){
+                //create a new hash index for each key, and insert the key
+                //into the new index
+                int index = hasher(map[i][j].key) % newCapacity;
+                newMap[index].push_back(map[i][j]);
+            }
+        }
+        //put the new data into the old map
+        map = newMap;
+        capacity = newCapacity;
     }
 };
 
